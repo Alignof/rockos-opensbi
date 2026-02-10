@@ -62,4 +62,8 @@ config SBI_ECALL_SSE
 	bool "SSE extension"
 	default y
 
+config SBI_ECALL_HIKAMI
+	bool "Original extension for hikami"
+	default y
+
 endmenu

@@ -144,4 +144,8 @@ sbi_hart_switch_mode(unsigned long arg0, unsigned long arg1,
 		     unsigned long next_addr, unsigned long next_mode,
 		     bool next_virt);
 
+void sbi_hart_delegate_illegal_insn(bool enable);
+#define SBI_EXT_HIKAMI_BENCHMARK		0x0A000088 /* Custom EID */
+#define SBI_EXT_HIKAMI_SET_DELEG_ILL_INSN	0x0
+
 #endif
