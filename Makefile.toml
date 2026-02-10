@@ -1,0 +1,25 @@
+[config]
+skip_core_tasks = true
+
+[tasks.default]
+# Make the 'build' task the default when running just 'cargo make'.
+alias = "build_sbi"
+
+[tasks.build_sbi]
+description = "Build sbi binary"
+script = ['''
+    make PLATFORM=generic \
+         FW_PAYLOAD=y \
+         FW_PAYLOAD_PATH=./u-boot.bin \
+         FW_FDT_PATH=./u-boot.dtb
+''']
+
+[tasks.sign]
+description = "Sign built binary"
+script = ['''
+    cp build/platform/generic/firmware/fw_payload.bin sign/preload 
+    pushd sign/preload
+        ../nsign bootchain.cfg
+    popd
+''']
+dependencies = ["build_sbi"]
