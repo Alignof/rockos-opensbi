@@ -3,23 +3,38 @@ skip_core_tasks = true
 
 [tasks.default]
 # Make the 'build' task the default when running just 'cargo make'.
-alias = "build_sbi"
+alias = "build"
 
-[tasks.build_sbi]
+[tasks.build]
 description = "Build sbi binary"
-script = ['''
+script = '''
     make PLATFORM=generic \
          FW_PAYLOAD=y \
          FW_PAYLOAD_PATH=./u-boot.bin \
          FW_FDT_PATH=./u-boot.dtb
-''']
+'''
 
 [tasks.sign]
 description = "Sign built binary"
-script = ['''
+condition = { files_modified = { input = [
+  "build/platform/generic/firmware/fw_payload.bin",
+], output = [
+  "sign/preload/fw_payload.bin",
+] } }
+script = '''
     cp build/platform/generic/firmware/fw_payload.bin sign/preload 
     pushd sign/preload
         ../nsign bootchain.cfg
     popd
-''']
-dependencies = ["build_sbi"]
+'''
+dependencies = ["build"]
+
+[tasks.install]
+description = "Install signed binary to SSD"
+script = '''
+    sudo mount /dev/sda1 /mnt
+    sudo cp sign/preload/bootloader_secboot_ddr5.bin /mnt/bootloader_for_hikami.bin
+    ls -l  /mnt/
+    sudo umount /mnt
+'''
+dependencies = ["sign"]
