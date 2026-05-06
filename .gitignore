@@ -17,3 +17,6 @@ install/
 # Development friendly files
 tags
 cscope*
+
+# ignore copied file from u-boot
+u-boot.*
