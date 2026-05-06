@@ -16,8 +16,14 @@ static int sbi_ecall_hikami_handler(unsigned long extid, unsigned long funcid,
     return SBI_ENOTSUPP;
 }
 
+struct sbi_ecall_extension ecall_hikami;
+static int sbi_ecall_hikami_register(void) {
+    return sbi_ecall_register_extension(&ecall_hikami);
+}
+
 struct sbi_ecall_extension ecall_hikami = {
     .extid_start = SBI_EXT_HIKAMI_BENCHMARK,
     .extid_end = SBI_EXT_HIKAMI_BENCHMARK,
+    .register_extensions = sbi_ecall_hikami_register,
     .handle = sbi_ecall_hikami_handler,
 };
